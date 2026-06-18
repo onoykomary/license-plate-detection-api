@@ -28,6 +28,17 @@ class AsyncS3Client(BaseS3Config):
         async with self.get_client() as client:
             await client.put_object(Bucket=self.bucket, Key=obj_name, Body=file)
             return obj_name
+        
+    async def create_bucket_if_not_exists(self):
+            async with self.get_client() as client:
+                response = await client.list_buckets()
+                existing_buckets = [b['Name'] for b in response.get('Buckets', [])]
+                
+                if self.bucket not in existing_buckets:
+                    await client.create_bucket(Bucket=self.bucket)
+                    print(f"Bucket {self.bucket} is created.")
+                else:
+                    print(f"Bucket {self.bucket} exists.")
 
 
 class SyncS3Client(BaseS3Config):

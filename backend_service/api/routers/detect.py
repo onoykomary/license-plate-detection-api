@@ -45,6 +45,3 @@ def get_status(task_id: str, db: Session = Depends(get_db)):
     task_result = celery_app.AsyncResult(task_id)
 
     return {"task_id": task_id, "status": task_result.state}
-
-
-# uvicorn main:app --reload
